@@ -52,27 +52,26 @@ export function FamilyRegistrationForm() {
     if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`
     return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`
   }
-const handleSubmit = async (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // 1. Prepara os dados com os nomes exatos das colunas do seu banco
     const dadosParaSalvar = {
       nome_completo: formData.nomeCompleto,
       cpf: formData.cpf,
       telefone: formData.telefone,
       endereco: formData.endereco,
       quantidade_criancas: formData.quantidadeCriancas,
-      data_cadastro: formData.dataCadastro.toISOString() // Transforma a data pro formato do banco
+      data_cadastro: formData.dataCadastro.toISOString()
     }
 
     try {
-      // 2. Envia direto pra sua tabela "familias" no Supabase!
       const resposta = await fetch("https://ylxavxuhynwmfugzavgs.supabase.co/rest/v1/familias", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlseGF2eHVoeW53bWZ1Z3phdmdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzU5NTYsImV4cCI6MjA4ODY1MTk1Nn0.AH2g1EoT3qG0Z8fQ9HWrZO7Q1Wfq428qy3D4sTgenQ8", // 
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlseGF2eHVoeW53bWZ1Z3phdmdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzU5NTYsImV4cCI6MjA4ODY1MTk1Nn0.AH2g1EoT3qG0Z8fQ9HWrZO7Q1Wfq428qy3D4sTgenQ8" // 
+          "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlseGF2eHVoeW53bWZ1Z3phdmdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzU5NTYsImV4cCI6MjA4ODY1MTk1Nn0.AH2g1EoT3qG0Z8fQ9HWrZO7Q1Wfq428qy3D4sTgenQ8", 
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlseGF2eHVoeW53bWZ1Z3phdmdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzU5NTYsImV4cCI6MjA4ODY1MTk1Nn0.AH2g1EoT3qG0Z8fQ9HWrZO7Q1Wfq428qy3D4sTgenQ8"
         },
         body: JSON.stringify(dadosParaSalvar)
       })
@@ -81,10 +80,8 @@ const handleSubmit = async (e: React.FormEvent) => {
         throw new Error("Erro na comunicação com o banco")
       }
 
-      // 3. Deu certo! Mostra a tela de sucesso
       setIsSubmitted(true)
       
-      // 4. Limpa o formulário depois de 3 segundos para o próximo cadastro
       setTimeout(() => {
         setIsSubmitted(false)
         setFormData({
@@ -99,11 +96,8 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     } catch (erro) {
       console.error(erro)
-      alert("Ops! Ocorreu um erro ao salvar. Verifique se sua chave está certa e se as colunas no Supabase têm esses mesmos nomes (telefone, endereco, etc).")
+      alert("Erro ao salvar no Supabase. Verifique suas chaves e colunas.")
     }
-  }
- 
-    }, 3000)
   }
 
   const incrementChildren = () => {
