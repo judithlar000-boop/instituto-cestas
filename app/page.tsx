@@ -1,5 +1,6 @@
 import { Header } from "@/components/header"
 import { FamilyRegistrationForm } from "@/components/family-registration-form"
+import { DeliveryRegistrationForm } from "@/components/delivery-registration-form"
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
         </div>
         
         <FamilyRegistrationForm />
+        <DeliveryRegistrationForm />
       </main>
     </div>
   )
