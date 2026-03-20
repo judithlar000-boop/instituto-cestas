@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
 import { Box, CalendarIcon, CheckCircle2, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
@@ -22,7 +21,6 @@ export function DeliveryRegistrationForm() {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  // 1. O robô busca as famílias cadastradas automaticamente quando a tela abre!
   useEffect(() => {
     const buscarFamilias = async () => {
       try {
@@ -103,85 +101,80 @@ export function DeliveryRegistrationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 pb-8">
-      <FieldGroup>
-        <Field>
-          <FieldLabel className="text-sm font-semibold text-foreground">Família que retirou a cesta</FieldLabel>
-          <div className="relative">
-            <User className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-            <select
-              value={formData.familia_id}
-              onChange={(e) => handleInputChange("familia_id", e.target.value)}
-              className="h-14 w-full appearance-none rounded-xl border-2 border-border bg-card pl-12 pr-4 text-base focus:border-accent focus:ring-accent"
-              required
-              disabled={isLoading}
-            >
-              <option value="" disabled>
-                {isLoading ? "Buscando famílias no banco de dados..." : "Clique para selecionar a família..."}
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-8">
+      
+      {/* Campo 1: Select Familia */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold text-foreground">Família que retirou a cesta</label>
+        <div className="relative">
+          <User className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+          <select
+            value={formData.familia_id}
+            onChange={(e) => handleInputChange("familia_id", e.target.value)}
+            className="h-14 w-full appearance-none rounded-xl border-2 border-border bg-card pl-12 pr-4 text-base focus:border-accent focus:ring-accent"
+            required
+            disabled={isLoading}
+          >
+            <option value="" disabled>
+              {isLoading ? "Buscando famílias no banco de dados..." : "Clique para selecionar a família..."}
+            </option>
+            {familias.map((familia) => (
+              <option key={familia.id} value={familia.id}>
+                {familia.nome_completo} (CPF: {familia.cpf})
               </option>
-              {familias.map((familia) => (
-                <option key={familia.id} value={familia.id}>
-                  {familia.nome_completo} (CPF: {familia.cpf})
-                </option>
-              ))}
-            </select>
-          </div>
-        </Field>
-      </FieldGroup>
+            ))}
+          </select>
+        </div>
+      </div>
 
-      <FieldGroup>
-        <Field>
-          <FieldLabel className="text-sm font-semibold text-foreground">Mês de Referência</FieldLabel>
-          <div className="relative">
-            <Box className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Ex: Março de 2026"
-              value={formData.mes_referencia}
-              onChange={(e) => handleInputChange("mes_referencia", e.target.value)}
-              className="h-14 rounded-xl border-2 border-border bg-card pl-12 text-base focus:border-accent focus:ring-accent"
-              required
+      {/* Campo 2: Mês de Referência */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold text-foreground">Mês de Referência</label>
+        <div className="relative">
+          <Box className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Ex: Março de 2026"
+            value={formData.mes_referencia}
+            onChange={(e) => handleInputChange("mes_referencia", e.target.value)}
+            className="h-14 rounded-xl border-2 border-border bg-card pl-12 text-base focus:border-accent focus:ring-accent"
+            required
+          />
+        </div>
+      </div>
+
+      {/* Campo 3: Data */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold text-foreground">Data da Retirada</label>
+        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+          <PopoverTrigger 
+            className={cn(
+              "flex h-14 w-full items-center gap-3 rounded-xl border-2 border-border bg-card px-4 text-left text-base transition-colors",
+              "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            )}
+          >
+            <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+            <span className="text-foreground">
+              {format(formData.data_entrega, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+            </span>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={formData.data_entrega}
+              onSelect={(date) => {
+                if (date) {
+                  handleInputChange("data_entrega", date)
+                  setIsCalendarOpen(false)
+                }
+              }}
+              locale={ptBR}
+              disabled={(date) => date > new Date() || date < new Date("2022-01-01")}
+              initialFocus
             />
-          </div>
-        </Field>
-      </FieldGroup>
-
-      <FieldGroup>
-        <Field>
-          <FieldLabel className="text-sm font-semibold text-foreground">Data da Retirada</FieldLabel>
-          <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className={cn(
-                  "flex h-14 w-full items-center gap-3 rounded-xl border-2 border-border bg-card px-4 text-left text-base transition-colors",
-                  "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
-                )}
-              >
-                <CalendarIcon className="h-5 w-5 text-muted-foreground" />
-                <span className="text-foreground">
-                  {format(formData.data_entrega, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                </span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={formData.data_entrega}
-                onSelect={(date) => {
-                  if (date) {
-                    handleInputChange("data_entrega", date)
-                    setIsCalendarOpen(false)
-                  }
-                }}
-                locale={ptBR}
-                disabled={(date) => date > new Date() || date < new Date("2022-01-01")}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </Field>
-      </FieldGroup>
+          </PopoverContent>
+        </Popover>
+      </div>
 
       <Button type="submit" className="mt-4 h-16 w-full rounded-xl bg-accent text-lg font-bold text-accent-foreground shadow-lg transition-all active:scale-[0.98]">
         Registrar Entrega
