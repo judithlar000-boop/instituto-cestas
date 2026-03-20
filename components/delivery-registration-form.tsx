@@ -147,16 +147,19 @@ export function DeliveryRegistrationForm() {
       <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-foreground">Data da Retirada</label>
         <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-          <PopoverTrigger 
-            className={cn(
-              "flex h-14 w-full items-center gap-3 rounded-xl border-2 border-border bg-card px-4 text-left text-base transition-colors",
-              "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
-            )}
-          >
-            <CalendarIcon className="h-5 w-5 text-muted-foreground" />
-            <span className="text-foreground">
-              {format(formData.data_entrega, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-            </span>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                "flex h-14 w-full items-center gap-3 rounded-xl border-2 border-border bg-card px-4 text-left text-base transition-colors",
+                "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+              )}
+            >
+              <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+              <span className="text-foreground">
+                {format(formData.data_entrega, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+              </span>
+            </button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
