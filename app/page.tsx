@@ -1,25 +1,29 @@
-import { Header } from "@/components/header"
 import { FamilyRegistrationForm } from "@/components/family-registration-form"
 import { DeliveryRegistrationForm } from "@/components/delivery-registration-form"
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="mx-auto max-w-lg px-4 py-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-primary">
-            Cadastro de Família
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Preencha os dados abaixo para registrar uma nova família no sistema
-          </p>
-        </div>
+    <main className="flex min-h-screen flex-col items-center p-8 bg-background">
+      <div className="w-full max-w-2xl flex flex-col gap-12">
         
-        <FamilyRegistrationForm />
-        <DeliveryRegistrationForm />
-      </main>
-    </div>
+        {/* Bloco 1: Cadastro de Família */}
+        <div className="flex flex-col gap-4">
+          <h1 className="text-3xl font-bold text-primary">Cadastro de Família</h1>
+          <p className="text-muted-foreground">Preencha os dados para registrar uma nova família.</p>
+          <FamilyRegistrationForm />
+        </div>
+
+        {/* Linha Divisória */}
+        <hr className="border-border" />
+
+        {/* Bloco 2: Registro de Entrega */}
+        <div className="flex flex-col gap-4">
+          <h1 className="text-3xl font-bold text-primary">Registro de Entrega</h1>
+          <p className="text-muted-foreground">Registre a entrega da cesta básica para uma família já cadastrada.</p>
+          <DeliveryRegistrationForm />
+        </div>
+
+      </div>
+    </main>
   )
 }
